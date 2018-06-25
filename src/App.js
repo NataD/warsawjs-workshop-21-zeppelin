@@ -1,19 +1,38 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import {Provider} from 'react-redux';
+import { ConnectedRouter } from "react-router-redux";
+import { Switch, Route, Redirect } from 'react-router-dom';
+
+import Home from './pages/Home';
+import Posts from './pages/Posts';
+
+import store, {history} from './store';
+//import {history} from './store';
+
+
 import './App.css';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
+          <Switch>
+              <Route
+                  exact path='/'
+                  render={props => localStorage.getItem('warsawjs-username') ? <Redirect to='/posts'/> : <Home {...props} /> }
+              />
+              <Route
+                  path='/posts'
+                  component={Posts}
+              />
+
+              <Route
+                  render={()=>'Not Found!'}
+              />
+          </Switch>
+        </ConnectedRouter>
+      </Provider>
     );
   }
 }
